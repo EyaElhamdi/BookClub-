@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 
 export default function BookCard({ book, onDelete, favorites = [], setFavorites, onAddFavorite, onRemoveFavorite }) {
+  const location = useLocation();
   // Placeholder pour l'image
   const publicPlaceholder = "/book-placeholder.svg";
   const inlineFallback =
@@ -94,7 +95,7 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
         />
 
         <div className="overlay">
-          <Link className="cta" to={`/books/${book._id}`}>Voir plus</Link>
+          <Link className="cta" to={`/books/${book._id}`} state={{ background: location }}>Voir plus</Link>
         </div>
       </div>
 

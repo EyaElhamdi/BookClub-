@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // Auth
 import Login from "./components/login.jsx";
@@ -24,6 +24,8 @@ import Header from "./components/Header.jsx";
 
 function AppRoutes() {
   const { token, role } = useAuth();
+  const location = useLocation();
+  const background = location.state && location.state.background;
   const isAuthenticated = !!token;
   /* =========================
      FAVORITES (localStorage)
@@ -47,7 +49,8 @@ function AppRoutes() {
     <Router>
       <Header />
 
-      <Routes>
+      {/* render the app routes using background location when a modal is open */}
+      <Routes location={background || location}>
         {/* Redirection par défaut */}
         <Route
           path="/"
@@ -130,6 +133,28 @@ function AppRoutes() {
           }
         />
       </Routes>
+
+      {/* Modal route — renders on top of the previous location */}
+      {background && (
+        <Routes>
+          <Route
+            path="/books/:id"
+            element={
+              <ModalWrapper onClose={() => navigate(-1)}>
+                <BookDetails
+                  favorites={favorites}
+                  setFavorites={setFavorites}
+                  onAddFavorite={(b) => {
+                    const exists = favorites.some((f) => f._id === b._id);
+                    if (!exists) setFavorites([...favorites, { _id: b._id, title: b.title, author: b.author, image: b.image }]);
+                  }}
+                  onRemoveFavorite={(b) => setFavorites(favorites.filter((f) => f._id !== b._id))}
+                />
+              </ModalWrapper>
+            }
+          />
+        </Routes>
+      )}
     </Router>
   );
 }
@@ -139,6 +164,26 @@ export default function App() {
     <AuthProvider>
       <AppRoutes />
     </AuthProvider>
+  );
+}
+
+function ModalWrapper({ children, onClose }) {
+  // close on Esc
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div className="page-modal" role="dialog" aria-modal="true" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" aria-label="Fermer" onClick={onClose}>×</button>
+        {children}
+      </div>
+    </div>
   );
 }
 

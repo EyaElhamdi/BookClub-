@@ -83,3 +83,11 @@
   .details-grid img.cover{ height:260px }
   .related-grid{ grid-template-columns: 1fr }
 }
+
+/* Modal wrapper for page-level modals */
+.page-modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:3000 }
+.page-modal .modal-content{ width:min(1100px,96%); max-height:90vh; overflow:auto; border-radius:12px }
+.page-modal .details-page{ margin:0; padding:20px; max-width:1100px }
+.page-modal .actions-row{ justify-content:flex-end }
+.modal-close{ position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:26px; color:#7b5563; cursor:pointer; padding:6px; border-radius:8px }
+.modal-close:hover{ background:rgba(0,0,0,0.04) }
