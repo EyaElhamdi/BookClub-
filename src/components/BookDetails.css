@@ -91,3 +91,11 @@
 .page-modal .actions-row{ justify-content:flex-end }
 .modal-close{ position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:26px; color:#7b5563; cursor:pointer; padding:6px; border-radius:8px }
 .modal-close:hover{ background:rgba(0,0,0,0.04) }
+
+/* Animations */
+.page-modal{ opacity:0; transition:opacity 220ms ease; }
+.page-modal.open{ opacity:1 }
+.page-modal.closing{ opacity:0 }
+.page-modal .modal-content{ transform: translateY(8px) scale(0.98); opacity:0; transition: transform 220ms ease, opacity 220ms ease; }
+.page-modal.open .modal-content{ transform: translateY(0) scale(1); opacity:1 }
+.page-modal.closing .modal-content{ transform: translateY(8px) scale(0.98); opacity:0 }

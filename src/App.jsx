@@ -168,19 +168,32 @@ export default function App() {
 }
 
 function ModalWrapper({ children, onClose }) {
-  // close on Esc
+  // handle open/close animations and Esc key
+  const [open, setOpen] = React.useState(false);
+
   React.useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+    // open animation
+    const t = setTimeout(() => setOpen(true), 10);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      clearTimeout(t);
+    };
+  }, []);
+
+  const handleClose = () => {
+    setOpen(false);
+    // wait for animation to finish before calling onClose
+    setTimeout(() => onClose && onClose(), 220);
+  };
 
   return (
-    <div className="page-modal" role="dialog" aria-modal="true" onClick={onClose}>
+    <div className={`page-modal ${open ? 'open' : 'closing'}`} role="dialog" aria-modal="true" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" aria-label="Fermer" onClick={onClose}>×</button>
+        <button className="modal-close" aria-label="Fermer" onClick={handleClose}>×</button>
         {children}
       </div>
     </div>
